@@ -12,7 +12,7 @@ public class Square {
 	private float w,h;
 	private boolean marked;
 	private TrueTypeFont ttf;
-	private String c = "";
+	private String c = null;
 	
 	public Square(float px, float py, float pw, float ph) {
 		x = px;
@@ -24,8 +24,15 @@ public class Square {
 		
 	}
 	
+	String getC() {
+		return c;
+	}
+	
 	public void draw() {
-		ttf.drawString(x+30, y+10, c, Color.red);
+		if (c != null)
+			ttf.drawString(x+30, y+10, c, Color.red);
+		else
+			ttf.drawString(x+30, y+10, "");
 	}
 	
 	public void setC(String b) {

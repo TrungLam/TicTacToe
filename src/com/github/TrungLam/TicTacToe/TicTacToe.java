@@ -1,9 +1,5 @@
 package com.github.TrungLam.TicTacToe;
 
-
-
-import java.util.ArrayList;
-
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -20,11 +16,13 @@ public class TicTacToe extends BasicGame{
 	static int screenWidth, screenHeight;
 	int mousex, mousey;
 	String mouseXY = "";
-	int counter;
-	ArrayList<Square> squares = new ArrayList<Square>();
+	Square squares[][] = new Square[3][3];
 	MouseBlock mb;
 	int squareX, squareY;
 	float squareWidth, squareHeight;
+	int index;
+	String playerMarker[] = {"X", "O"};
+	boolean win;
 	
 
 
@@ -40,9 +38,10 @@ public class TicTacToe extends BasicGame{
 		arg1.draw(line4);
 		arg1.drawString(mouseXY, 0, 100);
 		
-
-		for (Square square : squares) {
-			square.draw();
+		for (int i = 0; i < 3; i++) {
+			for (int k = 0; k < 3; k++)	{
+				squares[i][k].draw();
+			}
 		}
 	}
 
@@ -59,9 +58,12 @@ public class TicTacToe extends BasicGame{
 		squareWidth = (float)screenWidth - screenWidth*.66f;
 		squareHeight = (float)screenHeight - screenHeight*.66f;
 		mb = new MouseBlock(mousex, mousey);
+		win = false;
+		index = 0;
+		
 		for (int i = 0; i < 3; i++) {
 			for (int k = 0; k < 3; k++) {
-				squares.add(new Square(squareX, squareY, squareWidth, squareHeight));				
+				squares[i][k] = new Square(squareX, squareY, squareWidth, squareHeight);
 				squareX += squareWidth;
 			}
 			squareX = 0;
@@ -78,23 +80,51 @@ public class TicTacToe extends BasicGame{
 		mb.setY(mousey);
 		Input input = arg0.getInput();
 		
-		if (input.isMousePressed(0)) {
+		if (input.isMousePressed(0) && !win) {
+			
 			Square clickedSquare = null;
 			int found = 0;
 			
-			for (Square square : squares) {
-				if (mb.getRect().intersects(square.getRectangle()) && !square.getMark()) {
-					if (clickedSquare == null )
-						clickedSquare = square;
-					found++;
+			for (int i = 0; i < 3; i++) {
+				for (int k = 0; k < 3; k++) {
+					if (found > 1)
+						break;
+					if (mb.getRect().intersects(squares[i][k].getRectangle()) && !squares[i][k].getMark()) {
+						if (clickedSquare == null)
+							clickedSquare = squares[i][k];
+						found++;
+					}
 				}
 			}
 			
 			if (found == 1) {
-				clickedSquare.setC("X");
+				clickedSquare.setC(playerMarker[index]);
 				clickedSquare.setMark(true);
+				
+				win = checkWin();
+				
+				if (win)
+					System.out.println("win");
+				
+				index = (index == 0) ? 1 : 0;
 			}
 		}
+		
+	}
+	
+	boolean checkWin() {
+		int counter = 0;
+		for (int i = 0; i < 3; i++) {
+			for (int k =0; k < 3; k++) {
+				if (squares[i][k].getMark() && squares[i][k].getC() == playerMarker[index]) {
+					counter++;
+				}
+			}
+			if (counter == 3)
+				return true;
+			counter = 0;
+		}
+		return false;
 	}
 	
 	public static void main(String[] args) throws SlickException {
