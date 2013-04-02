@@ -53,22 +53,13 @@ public class TicTacToe extends BasicGame{
 		line4 = new Line(0, screenHeight * .66f, screenWidth, screenHeight * .66f);
 		mousex = Mouse.getX();
 		mousey = screenHeight - Mouse.getY();
-		squareX = 0;
-		squareY = 0;
-		squareWidth = (float)screenWidth - screenWidth*.66f;
-		squareHeight = (float)screenHeight - screenHeight*.66f;
+		
 		mb = new MouseBlock(mousex, mousey);
 		win = false;
 		index = 0;
-		
-		for (int i = 0; i < 3; i++) {
-			for (int k = 0; k < 3; k++) {
-				squares[i][k] = new Square(squareX, squareY, squareWidth, squareHeight);
-				squareX += squareWidth;
-			}
-			squareX = 0;
-			squareY += squareHeight;
-		}
+
+
+		initilizeSquares();
 	}
 
 	@Override
@@ -79,6 +70,11 @@ public class TicTacToe extends BasicGame{
 		mb.setX(mousex);
 		mb.setY(mousey);
 		Input input = arg0.getInput();
+		
+		if (input.isMousePressed(1)) {
+			initilizeSquares();
+			win = false;
+		}
 		
 		if (input.isMousePressed(0) && !win) {
 			
@@ -112,8 +108,26 @@ public class TicTacToe extends BasicGame{
 		
 	}
 	
+	void initilizeSquares() {
+		squareX = 0;
+		squareY = 0;
+		squareWidth = (float)screenWidth - screenWidth*.66f;
+		squareHeight = (float)screenHeight - screenHeight*.66f;
+		
+		for (int i = 0; i < 3; i++) {
+			for (int k = 0; k < 3; k++) {
+				squares[i][k] = new Square(squareX, squareY, squareWidth, squareHeight);
+				squareX += squareWidth;
+			}
+			squareX = 0;
+			squareY += squareHeight;
+		}
+	}
+	
 	boolean checkWin() {
 		int counter = 0;
+		
+		//check horizontal
 		for (int i = 0; i < 3; i++) {
 			for (int k =0; k < 3; k++) {
 				if (squares[i][k].getMark() && squares[i][k].getC() == playerMarker[index]) {
@@ -124,6 +138,27 @@ public class TicTacToe extends BasicGame{
 				return true;
 			counter = 0;
 		}
+		//check vertically
+		for (int i = 0; i < 3; i++) {
+			for (int k = 0; k < 3; k++) {
+				if (squares[k][i].getMark() && squares[k][i].getC() == playerMarker[index]) {
+					counter++;
+				}
+			}
+			if (counter == 3)
+				return true;
+			counter = 0;
+		}
+		//check diagonally
+		for (int i = 0; i < 3; i++){
+			if (squares[i][i].getMark() && squares[i][i].getC() == playerMarker[index]) {
+				counter++;
+			}
+			
+		}
+		if (counter == 3)
+			return true;
+		
 		return false;
 	}
 	
