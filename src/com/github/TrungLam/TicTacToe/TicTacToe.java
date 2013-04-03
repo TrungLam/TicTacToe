@@ -159,6 +159,16 @@ public class TicTacToe extends BasicGame{
 		if (counter == 3)
 			return true;
 		
+		counter = 0;
+		//check other diagonally
+		for (int i = 0, k = 2; i < 3; i++, k--) {
+			if (squares[i][k].getMark() && squares[i][k].getC() == playerMarker[index]) {
+				counter++;
+			}
+		}
+		if (counter == 3)
+			return true;
+		
 		return false;
 	}
 	
