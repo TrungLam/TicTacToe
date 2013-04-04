@@ -23,8 +23,6 @@ public class TicTacToe extends BasicGame{
 	int index;
 	String playerMarker[] = {"X", "O"};
 	boolean win;
-	
-
 
 	public TicTacToe() {
 		super("Tic Tac Toe");
@@ -76,24 +74,24 @@ public class TicTacToe extends BasicGame{
 			win = false;
 		}
 		
-		if (input.isMousePressed(0) && !win) {
+		if (input.isMousePressed(0) && !win && index == 0) {
 			
 			Square clickedSquare = null;
-			int found = 0;
+			int multipleCollisions = 0;
 			
 			for (int i = 0; i < 3; i++) {
 				for (int k = 0; k < 3; k++) {
-					if (found > 1)
+					if (multipleCollisions > 1)
 						break;
 					if (mb.getRect().intersects(squares[i][k].getRectangle()) && !squares[i][k].getMark()) {
 						if (clickedSquare == null)
 							clickedSquare = squares[i][k];
-						found++;
+						multipleCollisions++;
 					}
 				}
 			}
 			
-			if (found == 1) {
+			if (multipleCollisions == 1) {
 				clickedSquare.setC(playerMarker[index]);
 				clickedSquare.setMark(true);
 				
@@ -101,14 +99,39 @@ public class TicTacToe extends BasicGame{
 				
 				if (win)
 					System.out.println("win");
+				index = 1;
 				
-				index = (index == 0) ? 1 : 0;
 			}
 		}
+		
+		else if (index == 1 && !win) {
+			Square openSquare = null;
+			for (int i = 0; i < 3; i++) {
+				for (int k = 0; k < 3; k++) {
+					if (!squares[i][k].getMark()) {
+						openSquare = squares[i][k];
+						break;
+					}
+				}
+				if (openSquare != null)
+					break;
+			}
+			
+			openSquare.setC(playerMarker[index]);
+			openSquare.setMark(true);
+			
+			win = checkWin();
+			
+			if (win)
+				System.out.println("win");
+			index = 0;
+		}
+		
 		
 	}
 	
 	void initilizeSquares() {
+		index = 0;
 		squareX = 0;
 		squareY = 0;
 		squareWidth = (float)screenWidth - screenWidth*.66f;
