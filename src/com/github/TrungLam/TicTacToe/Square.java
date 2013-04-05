@@ -47,7 +47,7 @@ public class Square {
 		marked = n;
 	}
 	
-	public boolean getMark() {
+	public boolean isMark() {
 		return marked;
 	}
 }
