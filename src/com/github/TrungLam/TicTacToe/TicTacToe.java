@@ -1,5 +1,7 @@
 package com.github.TrungLam.TicTacToe;
 
+import java.util.Random;
+
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -22,6 +24,8 @@ public class TicTacToe extends BasicGame{
 	String playerMarker[] = {"X", "O"};
 	int playerIndex;
 	boolean win;
+	Random rand = new Random();
+	int marksPlaced;
 
 	public TicTacToe() {
 		super("Tic Tac Toe");
@@ -84,7 +88,7 @@ public class TicTacToe extends BasicGame{
 		}
 		
 		//player's turn
-		if (input.isMousePressed(0) && !win && playerIndex == 0) {
+		if (input.isMousePressed(0) && !win && playerIndex == 0 && marksPlaced < 9) {
 			
 			//will store valid square to be marked
 			Square clickedSquare = null;
@@ -120,11 +124,12 @@ public class TicTacToe extends BasicGame{
 				
 				//AI turn
 				playerIndex = 1;
+				marksPlaced++;
 			}
 		}
 		
 		//AI MOVE
-		else if (playerIndex == 1 && !win) {
+		else if (playerIndex == 1 && !win && marksPlaced < 9) {
 			
 			//will store valid square to be marked
 			Square openSquare = null;
@@ -247,23 +252,23 @@ public class TicTacToe extends BasicGame{
 					openSquare = squares[1][1];
 			}
 			
-			//take the next open square
+			//takes a random open square
 			if (openSquare == null) {
-				for (int row = 0; row < 3; row++) {
-					for (int col = 0; col < 3; col++) {
-						if (!squares[row][col].isMark()) {
-							openSquare = squares[row][col];
-							break;
-						}
-					}
-					if (openSquare != null)
+				int i = 0, k = 0;
+				while (openSquare == null) {
+					i = (int) Math.floor(rand.nextDouble() * 3);
+					k = (int) Math.floor(rand.nextDouble() * 3);
+					if (!squares[i][k].isMark())
 						break;
-				}				
+				}
+				openSquare = squares[i][k];
 			}
 			
+			//marks AI moves
 			if (openSquare != null) {
 				openSquare.setC(playerMarker[playerIndex]);
 				openSquare.setMark(true);
+				marksPlaced++;
 			}
 			
 			win = checkWin();
@@ -278,6 +283,7 @@ public class TicTacToe extends BasicGame{
 	
 	void initilizeSquares() {
 		playerIndex = 0;
+		marksPlaced = 0;
 		squareX = 0;
 		squareY = 0;
 		squareWidth = (float)screenWidth - screenWidth*.66f;
